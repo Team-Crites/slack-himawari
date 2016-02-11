@@ -4,6 +4,7 @@ const http = require("http");
 const connect = require("connect");
 const app = connect();
 const himawari = require("himawari");
+const moment = require("moment");
 
 app.use(require("body-parser").urlencoded({extended: true}));
 app.use((req, res) => {
@@ -17,10 +18,22 @@ app.use((req, res) => {
             res.writeHead(401);
             return res.end('{"error":"invalid token"}');
         }
-        const filename = `himawari-${Date.now()}.jpg`;
+
+        let date = moment();
+        if (req.body.text) {
+             date = moment(req.body.text);
+        }
+        if (!date.isValid()) {
+            res.writeHead(401);
+            return res.end('{"error":"invalid date, dingus"}');
+        }
+
+        const timestamp = +date;
+        const filename = `himawari-${timestamp}.jpg`;
         const outfile = `./images/${filename}`;
 
         himawari({
+            date: date.toDate(),
             outfile,
             success() {
                 res.end(JSON.stringify({
