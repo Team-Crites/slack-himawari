@@ -30,7 +30,7 @@ app.use((req, res) => {
 
         const timestamp = +date;
         const filename = `himawari-${timestamp}.jpg`;
-        const outfile = `./images/${filename}`;
+        const outfile = `/tmp/${filename}`;
 
         himawari({
             date: date.toDate(),
@@ -52,7 +52,7 @@ app.use((req, res) => {
         });
     }
     else {
-        const stream = fs.createReadStream(`./images${req.url}`);
+        const stream = fs.createReadStream(`/tmp${req.url}`);
         stream.on("open", () => stream.pipe(res));
         stream.on("error", () => {
             res.setHeader("Content-Type", "application/json");
