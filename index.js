@@ -68,7 +68,8 @@ app.use((req, res) => co(function* () {
         if (yield fs.exists(file)) {
             const stream = fs.createReadStream(file);
             stream.pipe(res);
-            res.on("end", () => fs.unlink(file));
+            // TODO remove images at an appropriate time or find a better spot for them
+            // res.on("end", () => fs.unlink(file));
         }
         else {
             let error = new Error("not found");
